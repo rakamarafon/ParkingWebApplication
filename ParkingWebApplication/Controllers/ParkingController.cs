@@ -11,36 +11,25 @@ namespace ParkingWebApplication.Controllers
     [Route("api/Parking")]
     public class ParkingController : Controller
     {
-        // GET: api/Parking
-        [HttpGet]
-        public IEnumerable<string> Get()
+        // GET: api/Parking/free
+        [HttpGet("free")]
+        public int GetFree()
         {
-            return new string[] { "value1", "value2" };
+            return ParkingLibrary.Parking.Instance.GetFreeSpaceOnParking();
         }
 
-        // GET: api/Parking/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        // GET: api/Parking/busy
+        [HttpGet("busy")]
+        public int GetBusy()
         {
-            return "value";
+            return ParkingLibrary.Parking.Instance.GetBusySpaceOnParking();
         }
         
-        // POST: api/Parking
-        [HttpPost]
-        public void Post([FromBody]string value)
+        // GET: api/Parking/income
+        [HttpGet]
+        public int GetTotalIncome()
         {
-        }
-        
-        // PUT: api/Parking/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-        
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+            return ParkingLibrary.Parking.Instance.Balance;
+        }              
     }
 }
