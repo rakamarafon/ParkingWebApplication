@@ -16,30 +16,30 @@ namespace ParkingWebApplication.Controllers
         private IParkingPlace parking = Parking.Instance;
         // GET: api/Transaction/log
         [HttpGet("log")]
-        public IEnumerable<string> GetTransactionLog()
+        public async Task<IEnumerable<string>> GetTransactionLog()
         {
-            return parking.GetTransactionsFromFile();
+            return await parking.GetTransactionsFromFile();
         }
 
         // GET: api/Transaction/minute
         [HttpGet("minute")]
-        public IEnumerable<Transaction> GetTransactionByLastMinute()
+        public async Task<IEnumerable<Transaction>> GetTransactionByLastMinute()
         {
-            return parking.GetTransactionsByLastMinute();
+            return  await parking.GetTransactionsByLastMinute();
         }
         
         // POST: api/Transaction/bycar
         [HttpGet("bycar")]
-        public IEnumerable<Transaction> GetTransactionByLastMinuteByCar(int id)
+        public async Task<IEnumerable<Transaction>> GetTransactionByLastMinuteByCar(int id)
         {
-            return parking.GetTransactionsByLastMinute(id);
+            return await parking.GetTransactionsByLastMinute(id);
         }
         
         // PUT: api/Transaction/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody]int value)
+        public async Task<IActionResult> Put(int id, [FromBody]int value)
         {
-            if (parking.RefillCarBalance(id, value)) return Ok(String.Format("Balance For car ID {0} was successfuly reffiled on {1}", id, value));
+            if (await parking.RefillCarBalance(id, value)) return Ok(String.Format("Balance For car ID {0} was successfuly reffiled on {1}", id, value));
             else return BadRequest(BAD_REQUEST);
         }        
     }
