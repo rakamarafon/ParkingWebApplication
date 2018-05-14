@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ParkingLibrary
 {
@@ -66,46 +67,62 @@ namespace ParkingLibrary
             Balance += price;
         }
 
-        public int AddCar(Car car)
+        public async Task<int> AddCar(Car car)
         {
-            if (car != null)
+            return await Task.Run(() => 
             {
-                if (CarList.Count >= ParkingSpace) return (int)ErrorsCod.FullParking;
-                foreach (var item in CarList)
+                lock(carListMonitor)
                 {
-                    if (item.CarId == car.CarId) return (int)ErrorsCod.ParkingHasCarWthThisID;
+                    if (car != null)
+                    {
+                        if (CarList.Count >= ParkingSpace) return (int)ErrorsCod.FullParking;
+                        foreach (var item in CarList)
+                        {
+                            if (item.CarId == car.CarId) return (int)ErrorsCod.ParkingHasCarWthThisID;
+                        }
+                        CarList.Add(car);
+                        return (int)ErrorsCod.Success;
+                    }
+                    return (int)ErrorsCod.Error;
+                }               
+            });
+            
+        }
+
+        public async Task<int> RemoveCar(int car_id)
+        {
+            return await Task.Run(() => 
+            {
+                lock(carListMonitor)
+                {
+                    if (CarList.Count == 0) return (int)ErrorsCod.EmptyList;
+                    Car car = GetCarById(car_id);
+                    if (car == null) return (int)ErrorsCod.NoCar;
+                    if (car.Balance < 0)
+                    {
+                        return (int)ErrorsCod.MinusBalance;
+                    }
+                    else
+                    {
+                        CarList.Remove(car);
+                        return (int)ErrorsCod.Success;
+                    }
+                }               
+            });           
+        }
+
+        public async Task<bool> RefillCarBalance(int car_id, int sum_to_refill)
+        {
+            return await Task.Run(() => 
+            {
+                Car car = GetCarById(car_id);
+                if (car != null)
+                {
+                    car.Balance += sum_to_refill;
+                    return true;
                 }
-                CarList.Add(car);
-                return (int)ErrorsCod.Success;
-            }
-            return (int)ErrorsCod.Error;
-        }
-
-        public int RemoveCar(int car_id)
-        {
-            if (CarList.Count == 0) return (int)ErrorsCod.EmptyList;
-            Car car = GetCarById(car_id);
-            if (car == null) return (int)ErrorsCod.NoCar;
-            if (car.Balance < 0)
-            {
-                return (int)ErrorsCod.MinusBalance;
-            }
-            else
-            {
-                CarList.Remove(car);
-                return (int)ErrorsCod.Success;
-            }
-        }
-
-        public bool RefillCarBalance(int car_id, int sum_to_refill)
-        {
-            Car car = GetCarById(car_id);
-            if (car != null)
-            {
-                car.Balance += sum_to_refill;
-                return true;
-            }
-            else return false;
+                else return false;
+            });           
         }
 
         public void WriteOff(object obj = null)
@@ -122,33 +139,39 @@ namespace ParkingLibrary
             }
         }
 
-        public List<Transaction> GetTransactionsByLastMinute()
+        public async Task<List<Transaction>> GetTransactionsByLastMinute()
         {
-            DateTime currentTime = DateTime.Now;
-            DateTime fromTIme = currentTime.AddMinutes(-1);
-            List<Transaction> returned_list = new List<Transaction>();
-            foreach (var item in TransactionList)
+            return await Task.Run(() => 
             {
-                if (item.TransactionDataTime >= fromTIme) returned_list.Add(item);
-            }
-            return returned_list;
+                lock (transactionListMonitor)
+                {
+                    return TransactionList;
+                }
+            });
         }
 
-        public List<Transaction> GetTransactionsByLastMinute(int id)
+        public async Task<List<Transaction>> GetTransactionsByLastMinute(int id)
         {
-            DateTime currentTime = DateTime.Now;
-            DateTime fromTIme = currentTime.AddMinutes(-1);
-            List<Transaction> returned_list = new List<Transaction>();
-            foreach (var item in TransactionList)
+            return await Task.Run(() => 
             {
-                if (item.TransactionDataTime >= fromTIme && item.CarId == id) returned_list.Add(item);
-            }
-            return returned_list;
+                lock (transactionListMonitor)
+                {
+                    List<Transaction> returned_list = new List<Transaction>();
+                    foreach (var item in TransactionList)
+                    {
+                        if (item.CarId == id) returned_list.Add(item);
+                    }
+                    return returned_list;
+                }
+            });
         }
 
-        public int GetFreeSpaceOnParking()
+        public async Task<int> GetFreeSpaceOnParking()
         {
-            return ParkingSpace - CarList.Count;
+            return await Task.Run(() => 
+            {
+                return ParkingSpace - CarList.Count; 
+            });                
         }
 
         public void SaveTransactionToFile(object obj = null)
@@ -187,70 +210,93 @@ namespace ParkingLibrary
             Timer timerSaveToFile = new Timer(SaveToFileCallback, null, 60 * 1000, 60 * 1000);
         }
 
-        public int GetBusySpaceOnParking() => CarList.Count;
+        public async Task<int> GetBusySpaceOnParking()
+        {
+            return await Task.Run(() => 
+            {
+               return CarList.Count;
+            }); 
+        }
 
-        public int TotalParkingProfit() => Balance;
+        public async Task<int> TotalParkingProfit()
+        {
+            return await Task.Run(() => 
+            {
+                return Balance;
+            });
+        }
 
         public int ParkingProfitByLastMinute() => TransactionList.Sum(x => x.MoneyPaid);
 
-        public List<string> GetTransactionsFromFile()
+        public async Task<List<string>> GetTransactionsFromFile()
         {
-            List<string> logs = new List<string>();
-            if (!File.Exists("Transaction.log")) return null;
-            try
+            return await Task.Run(() => 
             {
-                using (StreamReader reader = new StreamReader(LOG_FILE_NAME))
+                List<string> logs = new List<string>();
+                if (!File.Exists("Transaction.log")) return null;
+                try
                 {
-                    while (true)
+                    using (StreamReader reader = new StreamReader(LOG_FILE_NAME))
                     {
-                        string temp = reader.ReadLine();
-                        if (temp == null) break;
-                        logs.Add(temp);
+                        while (true)
+                        {
+                            string temp = reader.ReadLine();
+                            if (temp == null) break;
+                            logs.Add(temp);
+                        }
                     }
                 }
-            }
-            catch (ArgumentNullException ane)
-            {
-                Console.WriteLine(ane.Message);
-                return null;
-            }
-            catch (ArgumentException ae)
-            {
-                Console.WriteLine(ae.Message);
-                return null;
-            }
-            catch (FileNotFoundException fnfe)
-            {
-                Console.WriteLine(fnfe.Message);
-                return null;
-            }
-            catch (DirectoryNotFoundException dnfe)
-            {
-                Console.WriteLine(dnfe.Message);
-                return null;
-            }
-            catch (IOException ioe)
-            {
-                Console.WriteLine(ioe.Message);
-                return null;
-            }
+                catch (ArgumentNullException ane)
+                {
+                    Console.WriteLine(ane.Message);
+                    return null;
+                }
+                catch (ArgumentException ae)
+                {
+                    Console.WriteLine(ae.Message);
+                    return null;
+                }
+                catch (FileNotFoundException fnfe)
+                {
+                    Console.WriteLine(fnfe.Message);
+                    return null;
+                }
+                catch (DirectoryNotFoundException dnfe)
+                {
+                    Console.WriteLine(dnfe.Message);
+                    return null;
+                }
+                catch (IOException ioe)
+                {
+                    Console.WriteLine(ioe.Message);
+                    return null;
+                }
 
-            return logs;
+                return logs;
+            });           
+        }
+        public async Task<Car> GetCar(int id)
+        {
+            return await Task.Run(() =>
+            {
+                return CarList.FirstOrDefault(x => x.CarId == id);
+            });
         }
 
-        public List<Car> GetCarList()
+        public async Task<int> GetBalance()
         {
-            return CarList;
+            return await Task.Run(() => 
+            {
+                return Balance;
+            });
         }
 
-        public Car GetCar(int id)
+        public async Task<List<Car>> GetCarList()
         {
-            return CarList.FirstOrDefault(x => x.CarId == id);
-        }
-
-        public int GetBalance()
-        {
-            return Balance;
+            return await Task.Run(() =>
+            {
+                return CarList;
+            });
         }
     }
 }

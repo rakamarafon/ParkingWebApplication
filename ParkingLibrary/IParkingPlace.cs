@@ -1,26 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ParkingLibrary
 {
     public interface IParkingPlace
     {
-        int AddCar(Car car);
-        int RemoveCar(int car_id);
-        bool RefillCarBalance(int car_id, int sum_to_refill);
+        Task<int> AddCar(Car car);
+        Task<int> RemoveCar(int car_id);
+        Task<bool> RefillCarBalance(int car_id, int sum_to_refill);
         void WriteOff(object obj);
-        List<Transaction> GetTransactionsByLastMinute();
-        List<Transaction> GetTransactionsByLastMinute(int id);
-        int GetFreeSpaceOnParking();
+        Task<List<Transaction>> GetTransactionsByLastMinute();
+        Task<List<Transaction>> GetTransactionsByLastMinute(int id);
+        Task<int> GetFreeSpaceOnParking();
         void SaveTransactionToFile(object obj);
-        List<string> GetTransactionsFromFile();
+        Task<List<string>> GetTransactionsFromFile();
         void StartDay();
-        int GetBusySpaceOnParking();
-        int TotalParkingProfit();
+        Task<int> GetBusySpaceOnParking();
+        Task<int> TotalParkingProfit();
         int ParkingProfitByLastMinute();
-        List<Car> GetCarList();
-        Car GetCar(int id);
-        int GetBalance();
+        Task<List<Car>> GetCarList();
+        Task<Car> GetCar(int id);
+        Task<int> GetBalance();
     }
 }

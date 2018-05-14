@@ -15,23 +15,23 @@ namespace ParkingWebApplication.Controllers
         private IParkingPlace parking = Parking.Instance; 
         // GET: api/Parking/free
         [HttpGet("free")]
-        public int GetFree()
+        public async Task<int> GetFree()
         {
-            return parking.GetBusySpaceOnParking();
+            return await parking.GetFreeSpaceOnParking();
         }
 
         // GET: api/Parking/busy
         [HttpGet("busy")]
-        public int GetBusy()
+        public async Task<int> GetBusy()
         {
-            return parking.GetBusySpaceOnParking();
+            return await parking.GetBusySpaceOnParking();
         }
         
         // GET: api/Parking/income
         [HttpGet("income")]
-        public int GetTotalIncome()
+        public async Task<int> GetTotalIncome()
         {
-            return parking.GetBalance();
+            return await parking.GetBalance();
         }              
     }
 }
