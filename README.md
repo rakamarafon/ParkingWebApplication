@@ -41,3 +41,5 @@ _Transaction_
 * Reffil car balance(PUT):                        api/Transaction/{"id"} 
                                                   (add car id into request header and add summ to request body, 
                                                   _summ is a number not an object or array_)
+
+#Base URL: https://parkingwebapplication.azurewebsites.net/api/
