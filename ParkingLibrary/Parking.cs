@@ -167,7 +167,7 @@ namespace ParkingLibrary
                 using (StreamWriter sw = File.AppendText(LOG_FILE_NAME))
                 {
 
-                    sw.WriteLine(String.Format("{0} \t \t sum: {1}", DateTime.Now, sum));
+                    sw.WriteLine(String.Format("{0}    sum: {1}", DateTime.Now, sum));
                 }
             }
             catch (UnauthorizedAccessException uae) { Console.WriteLine(uae.Message); }

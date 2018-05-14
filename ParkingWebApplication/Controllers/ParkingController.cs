@@ -26,7 +26,7 @@ namespace ParkingWebApplication.Controllers
         }
         
         // GET: api/Parking/income
-        [HttpGet]
+        [HttpGet("income")]
         public int GetTotalIncome()
         {
             return ParkingLibrary.Parking.Instance.Balance;
