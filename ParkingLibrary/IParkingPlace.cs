@@ -8,7 +8,7 @@ namespace ParkingLibrary
     {
         int AddCar(Car car);
         int RemoveCar(int car_id);
-        void RefillCarBalance(int car_id, int sum_to_refill);
+        bool RefillCarBalance(int car_id, int sum_to_refill);
         void WriteOff(object obj);
         List<Transaction> GetTransactionsByLastMinute();
         int GetFreeSpaceOnParking();
