@@ -237,5 +237,20 @@ namespace ParkingLibrary
 
             return logs;
         }
+
+        public List<Car> GetCarList()
+        {
+            return CarList;
+        }
+
+        public Car GetCar(int id)
+        {
+            return CarList.FirstOrDefault(x => x.CarId == id);
+        }
+
+        public int GetBalance()
+        {
+            return Balance;
+        }
     }
 }

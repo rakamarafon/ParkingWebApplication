@@ -11,6 +11,7 @@ namespace ParkingLibrary
         bool RefillCarBalance(int car_id, int sum_to_refill);
         void WriteOff(object obj);
         List<Transaction> GetTransactionsByLastMinute();
+        List<Transaction> GetTransactionsByLastMinute(int id);
         int GetFreeSpaceOnParking();
         void SaveTransactionToFile(object obj);
         List<string> GetTransactionsFromFile();
@@ -18,5 +19,8 @@ namespace ParkingLibrary
         int GetBusySpaceOnParking();
         int TotalParkingProfit();
         int ParkingProfitByLastMinute();
+        List<Car> GetCarList();
+        Car GetCar(int id);
+        int GetBalance();
     }
 }

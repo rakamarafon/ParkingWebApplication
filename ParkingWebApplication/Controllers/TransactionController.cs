@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ParkingLibrary;
 
 namespace ParkingWebApplication.Controllers
 {
@@ -12,32 +13,33 @@ namespace ParkingWebApplication.Controllers
     public class TransactionController : Controller
     {
         private readonly string BAD_REQUEST = "Bad request";
+        private IParkingPlace parking = Parking.Instance;
         // GET: api/Transaction/log
         [HttpGet("log")]
         public IEnumerable<string> GetTransactionLog()
         {
-            return ParkingLibrary.Parking.Instance.GetTransactionsFromFile();
+            return parking.GetTransactionsFromFile();
         }
 
         // GET: api/Transaction/minute
         [HttpGet("minute")]
-        public IEnumerable<ParkingLibrary.Transaction> GetTransactionByLastMinute()
+        public IEnumerable<Transaction> GetTransactionByLastMinute()
         {
-            return ParkingLibrary.Parking.Instance.GetTransactionsByLastMinute();
+            return parking.GetTransactionsByLastMinute();
         }
         
         // POST: api/Transaction/bycar
         [HttpGet("bycar")]
-        public IEnumerable<ParkingLibrary.Transaction> GetTransactionByLastMinuteByCar(int id)
+        public IEnumerable<Transaction> GetTransactionByLastMinuteByCar(int id)
         {
-            return ParkingLibrary.Parking.Instance.GetTransactionsByLastMinute(id);
+            return parking.GetTransactionsByLastMinute(id);
         }
         
         // PUT: api/Transaction/5
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody]int value)
         {
-            if (ParkingLibrary.Parking.Instance.RefillCarBalance(id, value)) return Ok(String.Format("Balance For car ID {0} was successfuly reffiled on {1}", id, value));
+            if (parking.RefillCarBalance(id, value)) return Ok(String.Format("Balance For car ID {0} was successfuly reffiled on {1}", id, value));
             else return BadRequest(BAD_REQUEST);
         }        
     }
