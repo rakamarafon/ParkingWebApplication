@@ -42,4 +42,5 @@ _Transaction_
                                                   (add car id into request header and add summ to request body, 
                                                   _summ is a number not an object or array_)
 
-# Base URL: https://parkingwebapplication.azurewebsites.net/api/
+
+# Base URL: http://parkingwebapp.azurewebsites.net/
