@@ -11,36 +11,34 @@ namespace ParkingWebApplication.Controllers
     [Route("api/Transaction")]
     public class TransactionController : Controller
     {
-        // GET: api/Transaction
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly string BAD_REQUEST = "Bad request";
+        // GET: api/Transaction/log
+        [HttpGet("log")]
+        public IEnumerable<string> GetTransactionLog()
         {
-            return new string[] { "value1", "value2" };
+            return ParkingLibrary.Parking.Instance.GetTransactionsFromFile();
         }
 
-        // GET: api/Transaction/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        // GET: api/Transaction/minute
+        [HttpGet("minute")]
+        public IEnumerable<ParkingLibrary.Transaction> GetTransactionByLastMinute()
         {
-            return "value";
+            return ParkingLibrary.Parking.Instance.GetTransactionsByLastMinute();
         }
         
-        // POST: api/Transaction
-        [HttpPost]
-        public void Post([FromBody]string value)
+        // POST: api/Transaction/bycar
+        [HttpGet("bycar")]
+        public IEnumerable<ParkingLibrary.Transaction> GetTransactionByLastMinuteByCar(int id)
         {
+            return ParkingLibrary.Parking.Instance.GetTransactionsByLastMinute(id);
         }
         
         // PUT: api/Transaction/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public IActionResult Put(int id, [FromBody]int value)
         {
-        }
-        
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+            if (ParkingLibrary.Parking.Instance.RefillCarBalance(id, value)) return Ok(String.Format("Balance For car ID {0} was successfuly reffiled on {1}", id, value));
+            else return BadRequest(BAD_REQUEST);
+        }        
     }
 }

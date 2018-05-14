@@ -97,10 +97,15 @@ namespace ParkingLibrary
             }
         }
 
-        public void RefillCarBalance(int car_id, int sum_to_refill)
+        public bool RefillCarBalance(int car_id, int sum_to_refill)
         {
             Car car = GetCarById(car_id);
-            car.Balance += sum_to_refill;
+            if (car != null)
+            {
+                car.Balance += sum_to_refill;
+                return true;
+            }
+            else return false;
         }
 
         public void WriteOff(object obj = null)
@@ -125,6 +130,18 @@ namespace ParkingLibrary
             foreach (var item in TransactionList)
             {
                 if (item.TransactionDataTime >= fromTIme) returned_list.Add(item);
+            }
+            return returned_list;
+        }
+
+        public List<Transaction> GetTransactionsByLastMinute(int id)
+        {
+            DateTime currentTime = DateTime.Now;
+            DateTime fromTIme = currentTime.AddMinutes(-1);
+            List<Transaction> returned_list = new List<Transaction>();
+            foreach (var item in TransactionList)
+            {
+                if (item.TransactionDataTime >= fromTIme && item.CarId == id) returned_list.Add(item);
             }
             return returned_list;
         }
