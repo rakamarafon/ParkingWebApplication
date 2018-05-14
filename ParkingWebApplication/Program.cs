@@ -14,7 +14,8 @@ namespace ParkingWebApplication
     {
         public static void Main(string[] args)
         {
-            BuildWebHost(args).Run(); 
+            BuildWebHost(args).Run();
+            ParkingLibrary.Parking.Instance.StartDay();
         }
 
         public static IWebHost BuildWebHost(string[] args) =>
