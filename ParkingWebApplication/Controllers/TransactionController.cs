@@ -16,23 +16,29 @@ namespace ParkingWebApplication.Controllers
         private IParkingPlace parking = Parking.Instance;
         // GET: api/Transaction/log
         [HttpGet("log")]
-        public async Task<IEnumerable<string>> GetTransactionLog()
+        public async Task<IActionResult> GetTransactionLog()
         {
-            return await parking.GetTransactionsFromFile();
+            var transactions = await parking.GetTransactionsFromFile();
+            if (transactions.Count == 0) return BadRequest(String.Format("Not found transaction in logs"));
+            else return Ok(transactions);
         }
 
         // GET: api/Transaction/minute
         [HttpGet("minute")]
-        public async Task<IEnumerable<Transaction>> GetTransactionByLastMinute()
+        public async Task<IActionResult> GetTransactionByLastMinute()
         {
-            return  await parking.GetTransactionsByLastMinute();
+            var transactions = await parking.GetTransactionsByLastMinute();
+            if (transactions.Count == 0) return BadRequest(String.Format("Not found transaction by last minute"));
+            else return Ok(transactions);
         }
 
         // GET: api/Transaction/bycar/5
         [HttpGet("bycar/"+"{id}")]
-        public async Task<IEnumerable<Transaction>> GetTransactionByLastMinuteByCar(int id)
+        public async Task<IActionResult> GetTransactionByLastMinuteByCar(int id)
         {
-            return await parking.GetTransactionsByLastMinute(id);
+            var transactions = await parking.GetTransactionsByLastMinute(id);
+            if (transactions.Count == 0) return BadRequest(String.Format("Not found transaction in logs for car ID {0}", id));
+            else return Ok(transactions);
         }
         
         // PUT: api/Transaction/5

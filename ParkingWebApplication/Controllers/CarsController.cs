@@ -23,9 +23,11 @@ namespace ParkingWebApplication.Controllers
 
         // GET: api/Cars/5
         [HttpGet("{id}")]
-        public async Task<Car> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return await parking.GetCar(id);
+            Car car = await parking.GetCar(id);
+            if (car != null) return Ok(car);
+            else return BadRequest(String.Format("Car with ID {0} not found", id));
         }
         
         // POST: api/Cars
