@@ -127,16 +127,13 @@ namespace ParkingLibrary
 
         public void WriteOff(object obj = null)
         {
-            lock (carListMonitor)
-            {
-                if (CarList.Count > 0)
-                {
-                    for (int i = 0; i < CarList.Count; i++)
-                    {
-                        WriteOffByCar(CarList[i]);
-                    }
-                }
-            }
+           if (CarList.Count > 0)
+           {
+            for (int i = 0; i < CarList.Count; i++)
+             {
+               WriteOffByCar(CarList[i]);
+             }
+           }
         }
 
         public async Task<List<Transaction>> GetTransactionsByLastMinute()
@@ -176,15 +173,12 @@ namespace ParkingLibrary
 
         public void SaveTransactionToFile(object obj = null)
         {
-            int sum = 0;
-            lock (transactionListMonitor)
-            {
+            int sum = 0;          
                 foreach (var item in TransactionList)
                 {
                     sum += item.MoneyPaid;
                 }
-                TransactionList.Clear();
-            }
+                TransactionList.Clear();          
             try
             {
                 using (StreamWriter sw = File.AppendText(LOG_FILE_NAME))
