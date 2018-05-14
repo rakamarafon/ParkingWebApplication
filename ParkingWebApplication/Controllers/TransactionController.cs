@@ -27,9 +27,9 @@ namespace ParkingWebApplication.Controllers
         {
             return  await parking.GetTransactionsByLastMinute();
         }
-        
-        // POST: api/Transaction/bycar
-        [HttpGet("bycar")]
+
+        // GET: api/Transaction/bycar/5
+        [HttpGet("bycar/"+"{id}")]
         public async Task<IEnumerable<Transaction>> GetTransactionByLastMinuteByCar(int id)
         {
             return await parking.GetTransactionsByLastMinute(id);
