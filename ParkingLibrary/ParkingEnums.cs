@@ -11,7 +11,7 @@ namespace ParkingLibrary
         Bus,
         Motorcycle
     }
-    public enum ErrorsCod
+    public enum ErrorCodes
     {
         EmptyList,
         MinusBalance,
