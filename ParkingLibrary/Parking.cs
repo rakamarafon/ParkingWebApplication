@@ -75,15 +75,15 @@ namespace ParkingLibrary
                 {
                     if (car != null)
                     {
-                        if (CarList.Count >= ParkingSpace) return (int)ErrorsCod.FullParking;
+                        if (CarList.Count >= ParkingSpace) return (int)ErrorCodes.FullParking;
                         foreach (var item in CarList)
                         {
-                            if (item.CarId == car.CarId) return (int)ErrorsCod.ParkingHasCarWthThisID;
+                            if (item.CarId == car.CarId) return (int)ErrorCodes.ParkingHasCarWthThisID;
                         }
                         CarList.Add(car);
-                        return (int)ErrorsCod.Success;
+                        return (int)ErrorCodes.Success;
                     }
-                    return (int)ErrorsCod.Error;
+                    return (int)ErrorCodes.Error;
                 }               
             });
             
@@ -95,17 +95,17 @@ namespace ParkingLibrary
             {
                 lock(carListMonitor)
                 {
-                    if (CarList.Count == 0) return (int)ErrorsCod.EmptyList;
+                    if (CarList.Count == 0) return (int)ErrorCodes.EmptyList;
                     Car car = GetCarById(car_id);
-                    if (car == null) return (int)ErrorsCod.NoCar;
+                    if (car == null) return (int)ErrorCodes.NoCar;
                     if (car.Balance < 0)
                     {
-                        return (int)ErrorsCod.MinusBalance;
+                        return (int)ErrorCodes.MinusBalance;
                     }
                     else
                     {
                         CarList.Remove(car);
-                        return (int)ErrorsCod.Success;
+                        return (int)ErrorCodes.Success;
                     }
                 }               
             });           

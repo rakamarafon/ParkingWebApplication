@@ -35,9 +35,9 @@ namespace ParkingWebApplication.Controllers
         public async Task<IActionResult> Post([FromBody]Car value)
         {
             int result = await parking.AddCar(value);
-            if (result == (int)ErrorsCod.FullParking) return BadRequest("In the parking lot there are no free places");
-            else if (result == (int)ErrorsCod.ParkingHasCarWthThisID) return BadRequest(String.Format("Car with ID:{0} already in the parking place", value.CarId));
-            else if (result == (int)ErrorsCod.Success) return Ok(String.Format("car with ID:{0} was successfuly added", value.CarId));
+            if (result == (int)ErrorCodes.FullParking) return BadRequest("In the parking lot there are no free places");
+            else if (result == (int)ErrorCodes.ParkingHasCarWthThisID) return BadRequest(String.Format("Car with ID:{0} already in the parking place", value.CarId));
+            else if (result == (int)ErrorCodes.Success) return Ok(String.Format("car with ID:{0} was successfuly added", value.CarId));
             else return BadRequest(BAD_REQUEST);
         }
         
@@ -46,10 +46,10 @@ namespace ParkingWebApplication.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             int result = await parking.RemoveCar(id);
-            if (result == (int)ErrorsCod.EmptyList) return BadRequest("There are no cars on the parking place");
-            else if (result == (int)ErrorsCod.NoCar) return BadRequest("No car with such ID");
-            else if (result == (int)ErrorsCod.MinusBalance) return BadRequest(String.Format("Car with ID {0} has unpositive balance! Reffil car balance and try again", id));
-            else if (result == (int)ErrorsCod.Success) return Ok(String.Format("Car with ID {0} was successfuly deleted", id));
+            if (result == (int)ErrorCodes.EmptyList) return BadRequest("There are no cars on the parking place");
+            else if (result == (int)ErrorCodes.NoCar) return BadRequest("No car with such ID");
+            else if (result == (int)ErrorCodes.MinusBalance) return BadRequest(String.Format("Car with ID {0} has unpositive balance! Reffil car balance and try again", id));
+            else if (result == (int)ErrorCodes.Success) return Ok(String.Format("Car with ID {0} was successfuly deleted", id));
             else return BadRequest(BAD_REQUEST);
         }
     }
